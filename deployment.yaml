@@ -1,0 +1,41 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-crud-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-crud-app
+  template:
+    metadata:
+      labels:
+        app: simple-crud-app
+    spec:
+      containers:
+      - name: simple-crud-app
+        image: your-dockerhub-username/simple-crud-app
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+---
+# hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: simple-crud-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simple-crud-app
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50

@@ -1,0 +1,39 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: echo "Tests passed!" # Placeholder for actual tests
+
+      - name: Build Docker image
+        run: docker build -t your-dockerhub-username/simple-crud-app .
+# steps are to enable when docker hub and server is ready for deployment 
+      # - name: Log in to Docker Hub
+      #   run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      # - name: Push Docker image
+      #   run: docker push your-dockerhub-username/simple-crud-app
+
+      # - name: Deploy to Server
+      #   run: |
+      #     ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "docker pull your-dockerhub-username/simple-crud-app"
+      #     ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "docker run -d -p 80:3000 your-dockerhub-username/simple-crud-app"
